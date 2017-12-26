@@ -1,0 +1,156 @@
+#include <iostream>
+#include <conio.h>
+#include <cstdlib>
+#include <windows.h>
+#include <ctime>
+using namespace std;
+int przeciwnik_HP,gracz_HP=1300,obrazeniaGracza, obrazeniaPrzeciwnika;
+string przeciwnik_imie="Szkielet";
+int wybor, tura, ileTur=1, losowanieTypu;
+bool obronaGracza=false, obronaPrzeciwnika=false;
+
+int turaGracza(int przeciwnik_HP)
+{
+	cout<<"[1]Atak"<<endl;
+	cout<<"[2]Obrona"<<endl;
+	cout<<"Wybieraj: "; cin>>wybor;
+	cout<<"----------------------------------------"<<endl;
+	switch(wybor)
+	{
+		case 1:{ // gracz atakuje
+		//////////////////////////////////////////////////////////////
+			if(obronaPrzeciwnika==true) // gdy przeciwnik uzyl obrony
+			{
+				obronaPrzeciwnika=false;
+				obrazeniaGracza=0;
+				cout<<"- Gracz atakuje!"<<endl;
+				Sleep(1000);
+				cout<<"- Przeciwnik sie broni, gracz zadaje 0 obrazen!"<<endl;
+				Sleep(1000);
+				return przeciwnik_HP;
+			}
+		///////////////////////////////////////////////////////////////	
+			else{	// gdy przeciwnik nie uzyl obrony
+			obrazeniaGracza=(rand()%100)+50;
+			cout<<"- Gracz atakuje!"<<endl;
+			Sleep(1000);
+			cout<<"- Gracz zadaje "<<obrazeniaGracza<<" obrazen!"<<endl;
+			Sleep(1000);
+			return przeciwnik_HP;
+			}
+		}
+		case 2:{//gracz sie broni
+			cout<<"- Gracz uzywa obrony!"<<endl;
+			obronaGracza=true;
+			Sleep(2000);
+			return przeciwnik_HP;
+		}
+	}
+}
+int turaPrzeciwnika(int gracz_HP)
+{
+	/////////////////////////////////////////////////////////
+	if(obronaGracza==true) // gdy gracz uzyl obrony
+	{
+		obronaGracza=false;
+		obrazeniaPrzeciwnika=0;
+		Sleep(1000);
+		cout<<"- Przeciwnik atakuje!"<<endl;
+		Sleep(1000);
+		cout<<"- Gracz sie broni, przeciwnik zadaje 0 obrazen!"<<endl;
+		Sleep(1000);
+		return gracz_HP;
+	}
+	////////////////////////////////////////////////////////
+	else{
+	losowanieTypu=rand()%2+1; //losuje typ walki przeciwnika (obrona albo atak)
+	//1-atak
+	//2-atak
+	//3-obrona
+	if((losowanieTypu==1)||(losowanieTypu==2)){ // gdy wylosowal atak
+		obrazeniaPrzeciwnika=(rand()%80)+50;
+		Sleep(1000);
+		cout<<"- Przeciwnik atakuje!"<<endl;
+		Sleep(1000);
+		cout<<"- Przeciwnik zadaje "<<obrazeniaPrzeciwnika<<" obrazen!"<<endl;
+		gracz_HP-=obrazeniaPrzeciwnika;
+		Sleep(1000);
+		return gracz_HP;
+	}
+	else if(losowanieTypu==3){// gdy wylosowal obrone
+		obronaPrzeciwnika=true;
+		Sleep(1000);
+		cout<<"- Przeciwnik uzywa obrony!"<<endl;
+		Sleep(1000);
+		return gracz_HP;
+	}
+	else cout<<"Nieprawidlowo"<<endl;
+	
+	}
+}
+void menuWalki(int przeciwnik_HP)
+{
+	cout<<"__________________________________________________"<<endl;
+	cout<<"		SYMULATOR WALKI					"<<endl;
+	cout<<"__________________________________________________"<<endl;
+	cout<<"----------------------------------------"<<endl;
+	cout<<"               TURA "<<ileTur<<"       "<<endl;
+	cout<<"	"<<przeciwnik_imie<<endl;
+	cout<<"	HP: "<<przeciwnik_HP<<endl;
+	cout<<"----------------------------------------"<<endl;
+	cout<<"	Masz "<<gracz_HP<<" HP"<<endl;
+	cout<<"----------------------------------------"<<endl;
+}
+
+int main()
+{
+	srand(time(NULL));
+	przeciwnik_HP=(rand()%500+1)+500;
+	menuWalki(przeciwnik_HP);
+	tura=1; // 1 ture zaczyna gracz
+	do
+	{
+		if(tura==1) //tura gracza
+		{
+			ileTur++;
+			cout<<"Teraz twoj ruch!"<<endl;
+			turaGracza(przeciwnik_HP);
+			switch(wybor){
+				case 1: przeciwnik_HP=przeciwnik_HP-obrazeniaGracza;
+			}	
+			system("cls");
+			menuWalki(przeciwnik_HP);
+			tura=0;
+		}
+		else if(tura==0) //tura przeciwnika
+		{
+			ileTur++;
+			cout<<"Teraz ruch przeciwnika!"<<endl;
+			turaPrzeciwnika(gracz_HP);
+			if(losowanieTypu=1){
+				gracz_HP=gracz_HP-obrazeniaPrzeciwnika;
+			}
+			else if(losowanieTypu=2){
+				
+			}
+			system("cls");
+			menuWalki(przeciwnik_HP);	
+			tura=1;
+		}
+	}while((przeciwnik_HP>0)||(gracz_HP>0));	
+	
+		if (przeciwnik_HP=0)
+		{
+		cout<<"Brawo, wygrales!"<<endl;
+		getch();
+		exit(0);
+		}
+		else if (gracz_HP=0)
+		{
+		cout<<"Przegrales!"<<endl;
+		getch();
+		exit(0);
+		}	
+	getch();
+	
+}
